@@ -34,7 +34,7 @@ export default class Todo extends Component {
       <View>
       <TouchableHighlight
         underlayColor="#e4f2d9"
-        key={id}
+      
         style={styles.row}
         onPress={toggleTodo}>
         <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
