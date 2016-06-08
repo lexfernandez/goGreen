@@ -1,5 +1,3 @@
-'use strict';
-
 import * as actions from '../actions/actionTypes';
 import {visibilityFilters} from '../actions/actionTypes';
 

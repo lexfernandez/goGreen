@@ -38,10 +38,10 @@ class TodoApp extends Component {
   }
 
   render(){
-    const {todos,filter,dispatch,addModalVisible} = this.props;
-    const addModalBindActions = bindActionCreators(addModalVisibilityActions,dispatch);
-    const todoListBindActions =bindActionCreators(todoActions,dispatch);
-    const filtersBindActions =bindActionCreators(visibilityActions,dispatch);
+    const {todos,filter,addModalVisible,dispatch} = this.props;
+    const todoListBindActions= bindActionCreators(todoActions,dispatch);
+    const filtersBindActions= bindActionCreators(visibilityActions,dispatch);
+    const addModalBindActions= bindActionCreators(addModalVisibilityActions,dispatch);
     return (
       <View style={styles.container}>
         <TitleBar activeFilter={filter} {...addModalBindActions} />
@@ -62,10 +62,8 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(
-  state => ({
-    todos: getVisibleTodos(state.todos,state.filter),
-    filter: state.filter,
-    addModalVisible: state.addModal.visible
-  })
-)(TodoApp);
+export default connect(state => ({
+  todos: getVisibleTodos(state.todos,state.filter),
+  filter: state.filter,
+  addModalVisible: state.addModal.visible
+}))(TodoApp);

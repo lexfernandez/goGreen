@@ -9,3 +9,7 @@ export const visibilityFilters = {
   SHOW_COMPLETED: 'SHOW_COMPLETED',
   SHOW_ACTIVE: 'SHOW_ACTIVE'
 };
+
+//Auth actions
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';

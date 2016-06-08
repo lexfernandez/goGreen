@@ -4,6 +4,7 @@ import reducers from './reducers';
 import createLogger from 'redux-logger';
 import {persistStore, autoRehydrate} from 'redux-persist';
 import {AsyncStorage} from 'react-native';
+import promiseMiddleware from 'redux-promise-middleware';
 // const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 // const store = createStoreWithMiddleware(reducers);
 
@@ -16,7 +17,7 @@ var logger = createLogger({
 });
 
 
-var createStoreWithMiddleware = applyMiddleware(thunk,logger)(createStore);
+var createStoreWithMiddleware = applyMiddleware(thunk,logger,promiseMiddleware())(createStore);
 
 function configureStore(onComplete: ?() => void) {
   const store = autoRehydrate()(createStoreWithMiddleware)(reducers);
