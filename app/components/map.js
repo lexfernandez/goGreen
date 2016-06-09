@@ -30,11 +30,32 @@ var Map = React.createClass({
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      initialPosition: null,
+      lastPosition: null
     };
   },
 
   onRegionChange(region) {
     this.setState({ region });
+  },
+  componentDidMount: function() {
+    navigator.geolocation.getCurrentPosition( (position) => {
+      var initialPosition = JSON.stringify(position);
+      console.log("initialPosition:");
+      console.log(initialPosition);
+      this.setState({initialPosition});
+    },(error) => alert(error.message),
+    {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000} );
+
+    //event
+    this.watchID = navigator.geolocation.watchPosition(
+      (position) => {
+        var lastPosition = JSON.stringify(position);
+        console.log("lastPosition:");
+        console.log(lastPosition);
+         this.setState({lastPosition});
+       }
+     );
   },
 
 

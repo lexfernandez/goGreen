@@ -29,16 +29,17 @@ export default class App extends Component {
     return(
       <Provider store={this.state.store}>
         <RouterWithRedux>
-          <Scene key="root"
-          tabs={true}
-          component={connect(state => ({auth: state.auth}))(Switch)}
-          selector={(props)=> props.auth.isLoggedIn ? "drawer" : "login"}>
-            <Scene key="login" component={Login} type="replace" />
-            <Scene key="drawer" component={NavigationDrawer} type='reset' >
-              <Scene key="map" component={Map} title="Google Map" initial={true} type="replace" />
-              <Scene key="todoApp" component={TodoApp} title="Todos" type="replace"  />
-            </Scene>
-          </Scene>
+        <Scene key="drawer" component={NavigationDrawer}>
+        <Scene key="root"
+        tabs={true}
+        component={connect(state => ({auth: state.auth}))(Switch)}
+        selector={(props)=> props.auth.isLoggedIn ? "map" : "login"}>
+          <Scene key="login" hideNavBar={true} component={Login} type="replace" />
+            <Scene key="map" component={Map} title="Google Map" initial={true} type="replace" />
+            <Scene key="todoApp" component={TodoApp} title="Todos" type="replace"  />
+        </Scene>
+        </Scene>
+
         </RouterWithRedux>
       </Provider>
     );
