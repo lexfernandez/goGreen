@@ -25,13 +25,12 @@ var Map = React.createClass({
   getInitialState() {
     return {
       region: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        longitudeDelta: 0.001,
+        latitudeDelta: 0.001,
+        longitude: -86.21234200894833,
+        latitude: 15.340077778510487
       },
-      initialPosition: null,
-      lastPosition: null
+      position: null
     };
   },
 
@@ -40,33 +39,58 @@ var Map = React.createClass({
   },
   componentDidMount: function() {
     navigator.geolocation.getCurrentPosition( (position) => {
-      var initialPosition = JSON.stringify(position);
-      console.log("initialPosition:");
-      console.log(initialPosition);
-      this.setState({initialPosition});
-    },(error) => alert(error.message),
+      this.setState({position});
+      var region={
+         latitude: position.coords.latitude,
+         latitudeDelta: 0.001,
+         longitude: position.coords.longitude,
+         longitudeDelta: 0.001,
+       };
+       this.setState({region});
+    },(error) => {console.log(["error",error])},
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000} );
 
     //event
-    this.watchID = navigator.geolocation.watchPosition(
-      (position) => {
-        var lastPosition = JSON.stringify(position);
-        console.log("lastPosition:");
-        console.log(lastPosition);
-         this.setState({lastPosition});
+    this.watchID = navigator.geolocation.watchPosition( (position) => {
+         this.setState({position});
+
+         var region={
+            latitude: position.coords.latitude,
+            latitudeDelta: 0.001,
+            longitude: position.coords.longitude,
+            longitudeDelta: 0.001,
+          };
+          this.setState({region});
        }
      );
   },
-
+  componentWillUnmount: function() {
+    navigator.geolocation.clearWatch(this.watchID);
+  },
 
   render() {
+    var marker;
+
+    if(this.state.position!==null){
+      if( this.state.position.coords!==null){
+        marker = <MapView.Marker
+        coordinate={{latitude: this.state.position.coords.latitude, longitude:this.state.position.coords.longitude}}
+        title={'Alex'}
+        description={"marker.description"}
+        />;
+      }
+    }
+
     return (
        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end',}}>
-        <MapView
-        style={styles.map}
-        region={this.state.region}
-        onRegionChange={this.onRegionChange}
-        />
+          <MapView
+          style={styles.map}
+          region={this.state.region}
+          onRegionChange={this.onRegionChange}>
+
+          {marker}
+
+           </MapView>
         <ActionButton buttonColor="rgba(231,76,60,1)">
           <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => {console.log("triyin to push scene"); Actions.todoApp()}}>
             <Icon name="md-create" style={styles.actionButtonIcon} />
