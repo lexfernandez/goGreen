@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import configureStore from '../store'
 import { Router, Scene, Switch } from 'react-native-router-flux'
 import { connect } from 'react-redux'
+import NavigationDrawer from '../components/NavigationDrawer'
 
 import Login from './Login';
 import Map from '../components/map';
@@ -25,35 +26,19 @@ export default class App extends Component {
     if (this.state.isLoading) {
       return null;
     }
-    const connectedSwitch = connect(
-    (state) => ({
-        auth: state.auth,
-    })
-    )(Switch);
-    const selectScene = (props) => (
-        props.auth.isLoggedIn
-            ? 'authenticated'
-            : 'anonymous'
-    );
-
     return(
       <Provider store={this.state.store}>
-        <RouterWithRedux hideNavBar={true}>
-          <Scene
-          key="root"
-          component={connectedSwitch}
+        <RouterWithRedux>
+        <Scene key="drawer" component={NavigationDrawer}>
+          <Scene key="root"
           tabs={true}
-          selector={selectScene} >
-
-            <Scene key="anonymous" >
-              <Scene key="login" hideNavBar={true} component={Login}   initial={true} />
-            </Scene>
-            <Scene key="authenticated" >
-              <Scene key="map" component={Map} title="Google Map" initial={true} />
-              <Scene key="todoApp" component={TodoApp} title="Todos"  />
-            </Scene>
-            
+          component={connect(state => ({auth: state.auth}))(Switch)}
+          selector={(props)=> props.auth.isLoggedIn ? "map" : "login"}>
+            <Scene key="login" hideNavBar={true} component={Login} type="replace" />
+              <Scene key="map" component={Map} title="Google Map" initial={true} type="replace" />
+              <Scene key="todoApp" component={TodoApp} title="Todos" type="replace"  />
           </Scene>
+        </Scene>
 
         </RouterWithRedux>
       </Provider>
