@@ -25,8 +25,8 @@ var Map = React.createClass({
   getInitialState() {
     return {
       region: {
-        longitudeDelta: 0.001,
-        latitudeDelta: 0.001,
+        longitudeDelta: 6.2290871143341064,
+        latitudeDelta: 10.301953576995462,
         longitude: -86.21234200894833,
         latitude: 15.340077778510487
       },
@@ -35,16 +35,18 @@ var Map = React.createClass({
   },
 
   onRegionChange(region) {
+    console.log(region.longitudeDelta+","+region.latitudeDelta)
     this.setState({ region });
   },
   componentDidMount: function() {
     navigator.geolocation.getCurrentPosition( (position) => {
+      console.log(["current Position:", position]);
       this.setState({position});
       var region={
          latitude: position.coords.latitude,
-         latitudeDelta: 0.001,
+         latitudeDelta: 0.1,
          longitude: position.coords.longitude,
-         longitudeDelta: 0.001,
+         longitudeDelta: 0.1,
        };
        this.setState({region});
     },(error) => {console.log(["error",error])},
@@ -52,16 +54,18 @@ var Map = React.createClass({
 
     //event
     this.watchID = navigator.geolocation.watchPosition( (position) => {
+        console.log(["New Position:", position]);
          this.setState({position});
 
          var region={
             latitude: position.coords.latitude,
-            latitudeDelta: 0.001,
+            latitudeDelta: 0.1,
             longitude: position.coords.longitude,
-            longitudeDelta: 0.001,
+            longitudeDelta: 0.1,
           };
           this.setState({region});
-       }
+       },(error) => {console.log(["error",error])},
+       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000,distanceFilter: 1 } 
      );
   },
   componentWillUnmount: function() {
@@ -86,10 +90,16 @@ var Map = React.createClass({
           <MapView
           style={styles.map}
           region={this.state.region}
-          onRegionChange={this.onRegionChange}>
-
+          onRegionChange={this.onRegionChange}
+          showsUserLocation={true}
+          followsUserLocation={true}
+          showsPointsOfInterest={true}
+          showsCompass={true}
+          showsBuildings={true}
+          showsTraffic={true}
+          showsIndoors={true}
+          >
           {marker}
-
            </MapView>
         <ActionButton buttonColor="rgba(231,76,60,1)">
           <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => {console.log("triyin to push scene"); Actions.todoApp()}}>
