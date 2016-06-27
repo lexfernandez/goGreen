@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "532221135823",
+    "project_id": "gogreen-58ec4"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532221135823:android:372a9a9e85f1f982",
+        "android_client_info": {
+          "package_name": "com.gogreen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYLMn5-36mf7pelmnflrHn054xaYOr2zU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -30,42 +30,45 @@ var Map = React.createClass({
         longitude: -86.21234200894833,
         latitude: 15.340077778510487
       },
-      position: null
+      position: null,
+      zoomIn:true
     };
   },
 
   onRegionChange(region) {
-    console.log(region.longitudeDelta+","+region.latitudeDelta)
+    if(this.state.zoomIn){
+      region.latitudeDelta = 0.1;
+      region.longitudeDelta = 0.1;
+      this.setState({ zoomIn: false });
+    }
     this.setState({ region });
   },
   componentDidMount: function() {
     navigator.geolocation.getCurrentPosition( (position) => {
-      console.log(["current Position:", position]);
       this.setState({position});
       var region={
          latitude: position.coords.latitude,
-         latitudeDelta: 0.1,
          longitude: position.coords.longitude,
-         longitudeDelta: 0.1,
+         latitudeDelta: this.state.region.latitudeDelta,
+         longitudeDelta: this.state.region.longitudeDelta
        };
-       this.setState({region});
+       this.onRegionChange(region);
     },(error) => {console.log(["error",error])},
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000} );
 
     //event
     this.watchID = navigator.geolocation.watchPosition( (position) => {
-        console.log(["New Position:", position]);
          this.setState({position});
 
          var region={
             latitude: position.coords.latitude,
-            latitudeDelta: 0.1,
             longitude: position.coords.longitude,
-            longitudeDelta: 0.1,
+            latitudeDelta: this.state.region.latitudeDelta,
+            longitudeDelta: this.state.region.longitudeDelta
           };
-          this.setState({region});
+          this.onRegionChange(region);
        },(error) => {console.log(["error",error])},
-       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000,distanceFilter: 1 } 
+       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000,distanceFilter: 1 }
      );
   },
   componentWillUnmount: function() {
@@ -79,8 +82,8 @@ var Map = React.createClass({
       if( this.state.position.coords!==null){
         marker = <MapView.Marker
         coordinate={{latitude: this.state.position.coords.latitude, longitude:this.state.position.coords.longitude}}
-        title={'Alex'}
-        description={"marker.description"}
+        title={'Me'}
+        description={"This is my current position."}
         />;
       }
     }
@@ -91,8 +94,6 @@ var Map = React.createClass({
           style={styles.map}
           region={this.state.region}
           onRegionChange={this.onRegionChange}
-          showsUserLocation={true}
-          followsUserLocation={true}
           showsPointsOfInterest={true}
           showsCompass={true}
           showsBuildings={true}
@@ -101,15 +102,18 @@ var Map = React.createClass({
           >
           {marker}
            </MapView>
-        <ActionButton buttonColor="rgba(231,76,60,1)">
-          <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => {console.log("triyin to push scene"); Actions.todoApp()}}>
-            <Icon name="md-create" style={styles.actionButtonIcon} />
+        <ActionButton buttonColor="rgba(231,76,60,1)" size={40}>
+          <ActionButton.Item buttonColor='#9b59b6' degree={30} title="Agregar casa" onPress={() => { Actions.addHouse()}}>
+            <Icon name="ios-home" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
-            <Icon name="md-notifications" style={styles.actionButtonIcon} />
+          <ActionButton.Item buttonColor='#9b59b6' title="Agregar basurero publico" onPress={() => { Actions.todoApp()}}>
+            <Icon name="ios-trash" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
-            <Icon name="md-done-all" style={styles.actionButtonIcon} />
+          <ActionButton.Item buttonColor='#3498db' title="Buscar basureros cercanos" onPress={() => {}}>
+            <Icon name="ios-navigate" style={styles.actionButtonIcon} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#1abc9c' title="Reportar basurero clandestino" onPress={() => {}}>
+            <Icon name="ios-megaphone" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
 

@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
-import { Platform,StyleSheet } from 'react-native'
+import { Platform,StyleSheet,BackAndroid,DeviceEventEmitter } from 'react-native'
 import { Provider } from 'react-redux'
 import configureStore from '../store'
-import { Router,Reducer, Scene, Switch } from 'react-native-router-flux'
+import { Router,Reducer, Scene, Switch,Modal,Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 
 import NavigationDrawer from '../components/NavigationDrawer'
+var GcmAndroid = require('react-native-gcm-android');
+import Notification from 'react-native-system-notification';
 
 import Login from './Login';
 import Map from '../components/map';
 import TodoApp from './todoApp';
+import AddHouse from '../components/add-house'
 
 const RouterWithRedux = connect()(Router);
 const getSceneStyle = function (/* NavigationSceneRendererProps */ props, computedProps) {
@@ -44,6 +47,42 @@ export default class App extends Component {
       store: configureStore(() => this.setState({isLoading: false})),
     };
   }
+
+  componentWillMount(){
+    BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
+  }
+
+  componentDidMount() {
+      GcmAndroid.addEventListener('register', function(token){
+        console.log('send gcm token to server', token);
+      });
+      GcmAndroid.addEventListener('registerError', function(error){
+        console.log('registerError', error.message);
+      });
+      GcmAndroid.addEventListener('notification', function(notification){
+        console.log('receive gcm notification', notification);
+        var info = JSON.parse(notification.data.info);
+        if (!GcmAndroid.isInForeground) {
+          Notification.create({
+           subject: info.subject,
+           message: info.message,
+           subText: info.subText,
+           progress: info.progress,
+           color: info.color,
+           lights:'blue',
+           bigStyleImageBase64: info.bigStyleImageBase64,
+           bigText:info.bigText
+          });
+        }
+      });
+
+      DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+        console.log('sysNotificationClick', e);
+      });
+
+      GcmAndroid.requestPermissions();
+    }
+
   render(){
     if (this.state.isLoading) {
       return null;
@@ -54,9 +93,7 @@ export default class App extends Component {
     })
     )(Switch);
     const selectScene = (props) => (
-        props.auth.isLoggedIn
-            ? 'authenticated'
-            : 'anonymous'
+        props.auth.isLoggedIn ? 'authenticated' : 'anonymous'
     );
 
     return(
@@ -66,17 +103,21 @@ export default class App extends Component {
           key="root"
           component={connectedSwitch}
           tabs={true}
-          hideNavBar={false}
+          hideNavBar={true}
           selector={selectScene} >
 
-            <Scene key="anonymous" >
-              <Scene key="login" hideNavBar={true} component={Login}   initial={true} />
+            <Scene key="anonymous" hideNavBar={true}  hideTabBar={true} type="reset">
+              <Scene key="login" component={Login}  initial={true} />
             </Scene>
             <Scene key="authenticated" component={NavigationDrawer}>
-              <Scene key="main" hideNavBar={false} hideTabBar={true} >
-                <Scene key="map" component={Map} title="Google Map" initial={true} />
-                <Scene key="todoApp" component={TodoApp} title="Todos"  />
-              </Scene>
+                <Scene key="main" hideNavBar={true} hideTabBar={true} >
+                  <Scene key="map" component={Map} title="Google Map" initial={true} />
+                  <Scene key="todoApp" component={TodoApp} title="Todos"  />
+                  <Scene key="addHouse" component={AddHouse} title="Add House"  />
+                </Scene>
+
+
+
             </Scene>
 
           </Scene>

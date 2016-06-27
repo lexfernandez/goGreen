@@ -78,7 +78,6 @@ var styles = StyleSheet.create({
     },
     bg: {
       flex: 1,
-      resizeMode: 'cover'
     },
     logo:{
       flex:1

@@ -1,10 +1,14 @@
-import React,{ Component} from 'react'
+import React,{ Component,PropTypes} from 'react'
 import Drawer from 'react-native-drawer'
 import {DefaultRenderer, Actions} from 'react-native-router-flux';
 
 import SideMenu from './SideMenu';
 
-export default class NavigationDrawer extends Component {
+const propTypes = {
+  navigationState: PropTypes.object,
+};
+
+class NavigationDrawer extends Component {
 	render() {
 		const state = this.props.navigationState;
 		const children = state.children;
@@ -31,3 +35,6 @@ export default class NavigationDrawer extends Component {
 		);
 	}
 }
+
+NavigationDrawer.propTypes = propTypes;
+export default NavigationDrawer;

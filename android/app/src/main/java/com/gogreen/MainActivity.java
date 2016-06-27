@@ -9,6 +9,9 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import java.util.List;
 
+import com.oney.gcm.GcmPackage;                             // <- Add this line
+import io.neson.react.notification.NotificationPackage;     // <- Add this line
+
 public class MainActivity extends ReactActivity {
 
     /**
@@ -38,7 +41,9 @@ public class MainActivity extends ReactActivity {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new VectorIconsPackage(),
-            new AirPackage()
+            new AirPackage(),
+            new GcmPackage(),
+            new NotificationPackage(this)                  // <- Add this line
         );
     }
 }

@@ -18,26 +18,29 @@ export function login(username,password) {
             'password': password
           })
         }).then(function(response) {
-            console.log("response then");
-	          console.log(response);
             return response.json()
         }).catch(function(err) {
-          console.log("err catch");
-          console.log(err);
+          return err;
         })
     }
   }
 }
 
 export function logout(token) {
+  console.log(environment.serverURL+'/Users/logout?access_token='+token);
   return {
     type: actions.LOGOUT,
-    payload: fetch(environment.serverURL+'/Users/logout?access_token=${token}', {
+    payload: fetch(environment.serverURL+'/Users/logout', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-        },
+          'Authorization': token
+        }
+      }).then(function(response) {
+          return response.json()
+      }).catch(function(err) {
+        return err;
       })
   };
 }
