@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import configureStore from '../store'
 import { Router,Reducer, Scene, Switch,Modal,Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
+import {setDeviceToken} from '../actions/deviceTokenActions'
 
 import NavigationDrawer from '../components/NavigationDrawer'
 var GcmAndroid = require('react-native-gcm-android');
@@ -40,6 +41,7 @@ const reducerCreate = params=>{
 };
 
 export default class App extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -53,7 +55,10 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+      var self = this;
       GcmAndroid.addEventListener('register', function(token){
+        var dt=setDeviceToken(token);
+        self.state.store.dispatch(dt);
         console.log('send gcm token to server', token);
       });
       GcmAndroid.addEventListener('registerError', function(error){
@@ -62,18 +67,18 @@ export default class App extends Component {
       GcmAndroid.addEventListener('notification', function(notification){
         console.log('receive gcm notification', notification);
         var info = JSON.parse(notification.data.info);
-        if (!GcmAndroid.isInForeground) {
+        //if (!GcmAndroid.isInForeground) {
           Notification.create({
-           subject: info.subject,
-           message: info.message,
-           subText: info.subText,
-           progress: info.progress,
-           color: info.color,
-           lights:'blue',
-           bigStyleImageBase64: info.bigStyleImageBase64,
-           bigText:info.bigText
+            subject: info.subject,
+            message: info.message,
+            subText: info.subText,
+            progress: info.progress,
+            color: info.color,
+            lights:'blue',
+            bigStyleImageBase64: info.bigStyleImageBase64,
+            bigText:info.bigText
           });
-        }
+        //}
       });
 
       DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
@@ -97,7 +102,7 @@ export default class App extends Component {
     );
 
     return(
-      <Provider store={this.state.store}>
+      <Provider store={this.state.store} >
         <RouterWithRedux  getSceneStyle={getSceneStyle}>
           <Scene
           key="root"

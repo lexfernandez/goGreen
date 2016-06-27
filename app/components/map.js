@@ -5,6 +5,8 @@ import MapView from 'react-native-maps';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
+import {registerDeviceToken} from '../actions/deviceTokenActions';
+var DeviceInfo = require('react-native-device-info');
 
 const styles = StyleSheet.create({
   map: {
@@ -44,6 +46,13 @@ var Map = React.createClass({
     this.setState({ region });
   },
   componentDidMount: function() {
+    const {auth,registerDeviceToken,deviceToken} = this.props;
+    if(!deviceToken.isRegistered){
+      const deviceId = DeviceInfo.getUniqueID();
+      registerDeviceToken(auth.token,deviceId,deviceToken.deviceToken,auth.userId);
+    }
+
+
     navigator.geolocation.getCurrentPosition( (position) => {
       this.setState({position});
       var region={
@@ -123,4 +132,21 @@ var Map = React.createClass({
   }
 });
 
-export default connect(({routes}) => ({routes}))(Map);
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    routes: state.routes,
+    deviceToken: state.deviceToken
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    registerDeviceToken: (deviceId,deviceToken,userId) => {
+      dispatch(registerDeviceToken(deviceId,deviceToken,userId))
+    }
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Map);

@@ -1,6 +1,7 @@
 package com.gogreen;
 
 import com.facebook.react.ReactActivity;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.AirMaps.AirPackage;
 import com.facebook.react.ReactPackage;
@@ -11,6 +12,8 @@ import java.util.List;
 
 import com.oney.gcm.GcmPackage;                             // <- Add this line
 import io.neson.react.notification.NotificationPackage;     // <- Add this line
+
+
 
 public class MainActivity extends ReactActivity {
 
@@ -41,6 +44,7 @@ public class MainActivity extends ReactActivity {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new VectorIconsPackage(),
+            new RNDeviceInfo(),
             new AirPackage(),
             new GcmPackage(),
             new NotificationPackage(this)                  // <- Add this line

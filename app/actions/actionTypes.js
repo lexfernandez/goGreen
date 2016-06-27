@@ -13,3 +13,7 @@ export const visibilityFilters = {
 //Auth actions
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+
+//Device token registration
+export const SET_DEVICE_TOKEN = 'SET_DEVICE_TOKEN';
+export const DEVICE_TOKEN_REGISTRATION = 'DEVICE_TOKEN_REGISTRATION';

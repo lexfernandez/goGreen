@@ -129,6 +129,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0' // <- Add this line
     compile project(':RNGcmAndroid')                         // <- Add this line
     compile project(':react-native-system-notification')     // <- Add this line
+    compile project(':RNDeviceInfo')
 }
 
 // Run this once to be able to run the application with BUCK
