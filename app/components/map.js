@@ -6,6 +6,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
 import {registerDeviceToken} from '../actions/deviceTokenActions';
+import {setCurrentPosition} from '../actions/currentPositionActions'
 var DeviceInfo = require('react-native-device-info');
 
 const styles = StyleSheet.create({
@@ -46,7 +47,7 @@ var Map = React.createClass({
     this.setState({ region });
   },
   componentDidMount: function() {
-    const {auth,registerDeviceToken,deviceToken} = this.props;
+    const {auth,registerDeviceToken,deviceToken,setCurrentPosition} = this.props;
     if(!deviceToken.isRegistered){
       const deviceId = DeviceInfo.getUniqueID();
       registerDeviceToken(auth.token,deviceId,deviceToken.deviceToken,auth.userId);
@@ -61,6 +62,7 @@ var Map = React.createClass({
          latitudeDelta: this.state.region.latitudeDelta,
          longitudeDelta: this.state.region.longitudeDelta
        };
+       setCurrentPosition(region.latitude,region.longitude);
        this.onRegionChange(region);
     },(error) => {console.log(["error",error])},
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000} );
@@ -75,6 +77,7 @@ var Map = React.createClass({
             latitudeDelta: this.state.region.latitudeDelta,
             longitudeDelta: this.state.region.longitudeDelta
           };
+          setCurrentPosition(region.latitude,region.longitude);
           this.onRegionChange(region);
        },(error) => {console.log(["error",error])},
        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000,distanceFilter: 1 }
@@ -137,15 +140,15 @@ const mapStateToProps = (state) => {
   return {
     auth: state.auth,
     routes: state.routes,
-    deviceToken: state.deviceToken
+    deviceToken: state.deviceToken,
+    currentPosition: state.currentPosition
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    registerDeviceToken: (deviceId,deviceToken,userId) => {
-      dispatch(registerDeviceToken(deviceId,deviceToken,userId))
-    }
+    registerDeviceToken: (token,deviceId,deviceToken,userId) => { dispatch(registerDeviceToken(token,deviceId,deviceToken,userId)) },
+    setCurrentPosition: (lat,lon) => { dispatch(setCurrentPosition(lat,lon))}
   }
 }
 

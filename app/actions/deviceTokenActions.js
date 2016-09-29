@@ -10,6 +10,7 @@ export  function setDeviceToken(token){
 
 
 export function registerDeviceToken(token,deviceId,deviceToken,userId) {
+  console.log("userId",userId);
   return {
     type: actions.DEVICE_TOKEN_REGISTRATION,
     payload: fetch(environment.serverURL+'/GcmTokens', {
@@ -24,6 +25,24 @@ export function registerDeviceToken(token,deviceId,deviceToken,userId) {
         "deviceToken": deviceToken,
         "userId": userId
       })
+      }).then(function(response) {
+          return response.json()
+      }).catch(function(err) {
+        return err;
+      })
+  };
+}
+
+export function unregisterDeviceToken(token,deviceTokenId) {
+  return {
+    type: actions.DEVICE_TOKEN_UNREGISTRATION,
+    payload: fetch(environment.serverURL+'/GcmTokens/'+deviceTokenId, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
       }).then(function(response) {
           return response.json()
       }).catch(function(err) {
